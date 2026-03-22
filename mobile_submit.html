@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Launch Your Idea ✦</title>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400&family=Space+Grotesk:wght@300;400;500&display=swap');
+  :root{--void:#020408;--gold:#f5c842;--cyan:#38e8ff;--rose:#ff4d8d;--white:#e8f0ff;--dim:rgba(232,240,255,0.4);}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{background:var(--void);color:var(--white);font-family:'Space Grotesk',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;overflow-x:hidden;}
+  .nb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;}
+  .nb1{width:500px;height:500px;background:radial-gradient(circle,rgba(26,42,122,0.2),transparent);top:-150px;left:-150px;}
+  .nb2{width:400px;height:400px;background:radial-gradient(circle,rgba(90,26,122,0.15),transparent);bottom:-100px;right:-100px;}
+  .card{position:relative;z-index:1;width:100%;max-width:420px;background:rgba(7,12,22,0.9);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:32px 24px;backdrop-filter:blur(20px);box-shadow:0 0 60px rgba(56,232,255,0.06);}
+  #status-bar{display:flex;align-items:center;gap:8px;margin-bottom:28px;padding:8px 14px;border-radius:100px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;transition:all 0.4s;}
+  .sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:all 0.4s;}
+  .logo{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:5px;background:linear-gradient(135deg,var(--gold),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;margin-bottom:4px;}
+  .tagline{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2.5px;color:var(--dim);text-align:center;text-transform:uppercase;margin-bottom:28px;}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+  .field-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);padding-left:2px;}
+  input,textarea{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:16px;padding:14px 16px;outline:none;width:100%;transition:border-color 0.3s,background 0.3s;resize:none;}
+  input:focus,textarea:focus{border-color:rgba(56,232,255,0.5);background:rgba(56,232,255,0.04);}
+  input::placeholder,textarea::placeholder{color:rgba(232,240,255,0.2);}
+  .clusters{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px;}
+  .cluster-btn{border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 6px;background:rgba(255,255,255,0.03);color:rgba(232,240,255,0.5);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;text-align:center;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .cluster-btn .cicon{font-size:18px;}
+  .cluster-btn.selected{border-color:var(--btn-color);background:rgba(255,255,255,0.07);color:var(--white);box-shadow:0 0 16px var(--btn-color-dim);}
+  .launch-btn{width:100%;background:linear-gradient(135deg,var(--gold),#e09018);border:none;border-radius:16px;color:#080600;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;padding:16px;cursor:pointer;transition:transform 0.2s,opacity 0.2s;}
+  .launch-btn:active{transform:scale(0.97);}
+  .launch-btn:disabled{opacity:0.4;cursor:not-allowed;}
+  #success-screen{display:none;flex-direction:column;align-items:center;text-align:center;gap:16px;}
+  .success-star{font-size:64px;animation:star-spin 1s cubic-bezier(0.34,1.56,0.64,1) forwards;}
+  @keyframes star-spin{from{transform:scale(0) rotate(-180deg);opacity:0}to{transform:scale(1) rotate(0deg);opacity:1}}
+  .success-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:4px;}
+  .success-sub{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--dim);line-height:1.6;}
+  .another-btn{margin-top:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:var(--dim);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;padding:10px 20px;cursor:pointer;}
+  #connecting-screen{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;}
+  .spinner{width:40px;height:40px;border-radius:50%;border:2px solid rgba(56,232,255,0.15);border-top-color:var(--cyan);animation:spin 0.9s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .conn-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--cyan);}
+  .conn-sub{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--dim);}
+  #error-screen{display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;}
+  .err-icon{font-size:40px;}
+  .err-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--rose);}
+  .err-sub{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--dim);line-height:1.6;}
+  .retry-btn{margin-top:8px;background:rgba(255,77,141,0.1);border:1px solid rgba(255,77,141,0.3);border-radius:12px;color:var(--rose);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;padding:10px 20px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="nb nb1"></div><div class="nb nb2"></div>
+<div class="card">
+
+  <div id="connecting-screen">
+    <div class="spinner"></div>
+    <div class="conn-title">Joining Galaxy</div>
+    <div class="conn-sub">Connecting to the big screen…</div>
+  </div>
+
+  <div id="error-screen">
+    <div class="err-icon">⚠️</div>
+    <div class="err-title">Can't Connect</div>
+    <div class="err-sub">Make sure the galaxy screen is open<br>and scan the QR code again.</div>
+    <button class="retry-btn" onclick="location.reload()">TRY AGAIN</button>
+  </div>
+
+  <div id="form-screen" style="display:none;flex-direction:column;">
+    <div id="status-bar">
+      <div class="sdot" id="sdot" style="background:#39ff8a;box-shadow:0 0 8px #39ff8a"></div>
+      <span id="status-label">Connected to galaxy ✦</span>
+    </div>
+    <div class="logo">IDEA GALAXY</div>
+    <div class="tagline">Ideas Worth Spreading</div>
+    <div class="field">
+      <div class="field-label">Your Name</div>
+      <input type="text" id="name-input" placeholder="e.g. Priya S." maxlength="30" autocomplete="off"/>
+    </div>
+    <div class="field">
+      <div class="field-label">Your Idea Worth Spreading</div>
+      <textarea id="idea-input" rows="3" placeholder="What idea could change the world?" maxlength="160"></textarea>
+    </div>
+    <div class="field-label" style="margin-bottom:10px">Choose a Constellation</div>
+    <div class="clusters" id="clusters"></div>
+    <button class="launch-btn" id="launch-btn" onclick="launchIdea()">LAUNCH INTO GALAXY ✦</button>
+  </div>
+
+  <div id="success-screen">
+    <div class="success-star">⭐</div>
+    <div class="success-title">Star Launched!</div>
+    <div class="success-sub" id="success-sub">Your idea is now glowing<br>on the big screen.</div>
+    <div id="success-cluster"></div>
+    <button class="another-btn" onclick="resetForm()">LAUNCH ANOTHER IDEA</button>
+  </div>
+
+</div>
+<script>
+const CLUSTERS=[
+  {id:'tech',  label:'Technology',hex:'#38e8ff',icon:'💡'},
+  {id:'human', label:'Humanity',  hex:'#ff4d8d',icon:'❤️'},
+  {id:'earth', label:'Earth',     hex:'#39ff8a',icon:'🌍'},
+  {id:'edu',   label:'Education', hex:'#f5c842',icon:'📚'},
+  {id:'govern',label:'Governance',hex:'#a855f7',icon:'⚖️'},
+  {id:'create',label:'Creativity',hex:'#ff8c38',icon:'🎨'},
+];
+
+// Build cluster grid
+const grid=document.getElementById('clusters');
+let selectedCluster=null;
+CLUSTERS.forEach(c=>{
+  const btn=document.createElement('button');
+  btn.className='cluster-btn';
+  btn.style.setProperty('--btn-color',c.hex);
+  btn.style.setProperty('--btn-color-dim',c.hex+'33');
+  btn.innerHTML=`<span class="cicon">${c.icon}</span>${c.label}`;
+  btn.onclick=()=>{document.querySelectorAll('.cluster-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedCluster=c.id;};
+  grid.appendChild(btn);
+});
+
+function classifyIdea(t){
+  t=t.toLowerCase();
+  const map={tech:['tech','ai','digital','robot','code','software','data'],human:['empathy','mental','health','people','community','human','family','love'],earth:['climate','nature','planet','environment','green','forest','ocean','carbon'],edu:['school','learn','teach','education','student','knowledge','science'],govern:['govern','policy','law','democra','freedom','rights','justice','vote'],create:['art','creat','music','design','culture','story','express','imagin']};
+  let best='tech',bs=0;
+  Object.entries(map).forEach(([id,kws])=>{const s=kws.filter(k=>t.includes(k)).length;if(s>bs){bs=s;best=id;}});
+  return best;
+}
+
+function showScreen(id){
+  ['connecting-screen','error-screen','form-screen','success-screen'].forEach(s=>{
+    const el=document.getElementById(s);
+    if(s===id){el.style.display='flex';el.style.flexDirection='column';}
+    else el.style.display='none';
+  });
+}
+
+// PeerJS
+const hostId=new URLSearchParams(location.search).get('host');
+let peer,conn;
+
+function connect(){
+  if(!hostId){showScreen('error-screen');return;}
+  showScreen('connecting-screen');
+  peer=new Peer(undefined,{debug:0});
+  peer.on('open',()=>{
+    conn=peer.connect(hostId,{reliable:true});
+    conn.on('open',()=>showScreen('form-screen'));
+    conn.on('error',()=>showScreen('error-screen'));
+    setTimeout(()=>{if(!conn||!conn.open)showScreen('error-screen');},10000);
+  });
+  peer.on('error',()=>showScreen('error-screen'));
+}
+connect();
+
+async function launchIdea(){
+  const name=document.getElementById('name-input').value.trim();
+  const text=document.getElementById('idea-input').value.trim();
+  const btn=document.getElementById('launch-btn');
+  if(!name){document.getElementById('name-input').style.borderColor='rgba(255,77,141,0.6)';setTimeout(()=>document.getElementById('name-input').style.borderColor='',1200);return;}
+  if(text.length<8){document.getElementById('idea-input').style.borderColor='rgba(255,77,141,0.6)';setTimeout(()=>document.getElementById('idea-input').style.borderColor='',1200);return;}
+  btn.disabled=true;btn.textContent='LAUNCHING…';
+
+  const clusterId=selectedCluster||classifyIdea(text);
+  const cluster=CLUSTERS.find(c=>c.id===clusterId)||CLUSTERS[0];
+
+  if(conn&&conn.open){conn.send({type:'idea',name,text,cluster:cluster.id});}
+
+  document.getElementById('success-sub').innerHTML=`<strong style="color:${cluster.hex}">${name}</strong><br>Your idea is now glowing on the big screen.`;
+  const sc=document.getElementById('success-cluster');
+  sc.textContent=`✦ ${cluster.label} Constellation`;
+  sc.style.cssText=`background:${cluster.hex}22;color:${cluster.hex};border:1px solid ${cluster.hex}44;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;padding:6px 16px;border-radius:100px;margin-top:4px;`;
+  showScreen('success-screen');
+  btn.disabled=false;btn.textContent='LAUNCH INTO GALAXY ✦';
+}
+
+function resetForm(){
+  document.getElementById('name-input').value='';
+  document.getElementById('idea-input').value='';
+  document.querySelectorAll('.cluster-btn').forEach(b=>b.classList.remove('selected'));
+  selectedCluster=null;
+  showScreen('form-screen');
+}
+</script>
+</body>
+</html>
